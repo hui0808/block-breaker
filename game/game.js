@@ -5,16 +5,13 @@ class Game extends GameObject {
         this.images = images
         this.enableDebug = globalDebug
         this.scene = null
+        this.pause = false
         this.actions = {}
         this.keydowns = {}
         this.canvas = document.querySelector('#id-canvas')
         this.context = this.canvas.getContext('2d')
-        window.addEventListener('keydown', event => {
-            this.keydowns[event.key] = true
-        })
-        window.addEventListener('keyup', event => {
-            this.keydowns[event.key] = false
-        })
+        this.listener(window, 'keydown', event => this.keydowns[event.key] = true)
+        this.listener(window, 'keyup', event => this.keydowns[event.key] = false)
         this.init()
     }
 
@@ -46,41 +43,37 @@ class Game extends GameObject {
         }
     }
 
-    //
     registerAction(key, callback) {
         this.actions[key] = callback
     }
 
-    runloop() {
+    handelEvent() {
         for (let key of Object.keys(this.actions)) {
             if (this.keydowns[key]) {
                 this.actions[key]()
             }
         }
+    }
 
-        // update
-        this.update()
-        // debug
-        this.debug()
-        // clear
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
-        // draw
-        this.draw()
-
-        // next run loop
+    runloop() {
+        this.handelEvent()
+        if (!this.pause) {
+            this.update()
+            this.debug()
+            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
+            this.draw()
+        }
         setTimeout(() => {
             this.runloop()
         }, 1000 / this.fps)
     }
 
     textureByName(name) {
-        // log('image by name', this.images)
         return this.images[name]
     }
 
     runWithScene(scene) {
         this.scene = scene.new(this)
-        // 开始运行程序
         setTimeout(() => {
             this.runloop()
         }, 1000 / this.fps)
