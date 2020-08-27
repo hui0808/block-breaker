@@ -89,25 +89,27 @@ class Game extends GameObject {
         this.scene = s
     }
 
-    init() {
+    preload(callback) {
         let loads = 0
-        // 预先载入所有图片
         let names = Object.keys(this.images)
         log('images', this.images)
+        if (names.length === 0) callback && callback()
         for (let key of names) {
             let path = this.images[key]
             let img = imageFromPath(path)
-            // 存入 this.images 中
             img.onload = () => {
                 log(img)
                 this.images[key] = img
-                // 所有图片都成功载入之后, 调用 run
                 loads++
                 if (loads === names.length) {
                     log('load images', this.images)
-                    this.start()
+                    callback && callback()
                 }
             }
         }
+    }
+
+    init() {
+        this.preload(() => this.start())
     }
 }
