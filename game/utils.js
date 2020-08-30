@@ -3,13 +3,13 @@ const es = sel => document.querySelectorAll(sel)
 
 const log = console.log.bind(console)
 
-const imageFromPath = function (path) {
+const imageFromPath = function(path) {
     let img = new Image()
     img.src = path
     return img
 }
 
-const loadLevel = function (game, n) {
+const loadLevel = function(game, n) {
     n--
     let level = levels[n]
     let blocks = []
@@ -21,11 +21,11 @@ const loadLevel = function (game, n) {
     return blocks
 }
 
-const aInb = function (x, x1, x2) {
+const aInb = function(x, x1, x2) {
     return x >= x1 && x <= x2
 }
 
-const rectIntersects = function (a, b) {
+const rectIntersects = function(a, b) {
     if (aInb(a.x, b.x, b.x + b.w) || aInb(b.x, a.x, a.x + a.w)) {
         if (aInb(a.y, b.y, b.y + b.h) || aInb(b.y, a.y, a.y + a.h)) {
             if (aInb(a.y, b.y, b.y + b.h) && aInb(a.y + a.h, b.y, b.y + b.h)) {
@@ -38,28 +38,28 @@ const rectIntersects = function (a, b) {
     return 0
 }
 
-const bindAll = function (sel, eventName, callback) {
+const bindAll = function(sel, eventName, callback) {
     let e = es(sel)
     for (let i = 0; i < e.length; i++) {
         let input = e[i]
-        input.addEventListener(eventName, function (event) {
+        input.addEventListener(eventName, function(event) {
             callback(event)
         })
     }
 }
 
-const templaterender = function (name, item) {
+const templaterender = function(name, item) {
     return `
             <div>
                 <label>
-                    <input class="range_value" type="range" value="${item.value}" data-value="config.${name}" min="${item.min}" max="${item.max}">
+                    <input class="range_value" type="range" step="${item.step || 1}" value="${item.value}" data-key="${name}" min="${item.min}" max="${item.max}">
                     ${item.text}<span class="display-label">${item.value}</span>
                 </label>
             </div>
         `
 }
 
-const slider_debug = function () {
+const slider_debug = function() {
     let div = e(".debug")
 
     for (let key of Object.keys(config)) {
@@ -69,11 +69,11 @@ const slider_debug = function () {
         div.insertAdjacentHTML('beforeend', html)
     }
 
-    bindAll('.range_value', 'input', function (event) {
+    bindAll('.range_value', 'input', function(event) {
         let target = event.target
-        let value = target.value
-        let bindVar = target.dataset.value
-        eval(bindVar + '.value =' + value)
+        let value = Number(target.value)
+        let key = target.dataset.key
+        config[key].value = value
         let label = target.closest('label').querySelector('.display-label')
         label.innerText = value
     })

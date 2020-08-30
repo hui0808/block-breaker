@@ -1,6 +1,6 @@
 class Score extends TextMode {
     constructor(game, score = 0) {
-        super(game, "目前分数为: ", 5, 295, "15px Arial")
+        super(game, "", 5, 295, "15px Arial")
         this.score = score
     }
 
@@ -8,8 +8,8 @@ class Score extends TextMode {
         this.score += score
     }
 
-    draw() {
-        super.draw();
-        this.game.context.fillText(this.text + this.score, this.x, this.y)
+    update() {
+        super.update()
+        this.text = '目前分数为: ' + this.score
     }
 }

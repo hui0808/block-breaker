@@ -9,7 +9,7 @@ const images = {
     background: 'img/background.jpg',
 }
 
-const config = {
+let config = {
     fps: {
         value: 30,
         text: "fps: ",
